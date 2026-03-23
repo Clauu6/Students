@@ -34,7 +34,7 @@ public class Student {
 
     @Override
         public String toString(){
-         return String.format("%01d %10s %10s %10s",numarMatricol,prenume,nume,formatiedeStudiu);
+         return String.format("%10s %10s %10s %10s",numarMatricol,prenume,nume,formatiedeStudiu);
         }
 
     @Override
