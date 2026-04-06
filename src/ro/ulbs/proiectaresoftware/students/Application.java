@@ -3,11 +3,7 @@ package ro.ulbs.proiectaresoftware.students;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Scanner;
+import java.util.*;
 
 public class Application {
     public static boolean prezent(Student student, List<Student> studenti) {
@@ -70,6 +66,7 @@ return true;
         return false;
     }
 
+/*
     public static boolean sortareDupaFormatiesiPrenume(List<Student> listastudent)
     {
         for(int i=0;i<listastudent.size()-1;i++)
@@ -104,8 +101,84 @@ return true;
         return false;
     }
 
+ */
+
+
+    private static void sortareDupaFormatiesiNume(List<Student> studenti) {
+        Collections.sort(studenti, new Comparator<Student>() {
+            @Override
+            public int compare(Student s1, Student s2) {
+                if(s1.getFormatiedeStudiu().equals(s2.getFormatiedeStudiu())) {
+                    if (s1.getNume().equals(s2.getNume())) {
+                        if (s1.getPrenume().equals(s2.getPrenume())) {
+                            return s1.getNumarMatricol().compareTo(s2.getNumarMatricol());
+                        } else return s1.getPrenume().compareTo(s2.getPrenume());
+                    } else return s1.getNume().compareTo(s2.getNume());
+                }
+                else return s1.getFormatiedeStudiu().compareTo(s2.getFormatiedeStudiu());
+            }
+
+        });
+
+    }
+
+    public static Map<String,Integer> citireNote(String numeFisier) {
+        String numarMatricol,nota;
+
+        Map<String,Integer> note=new HashMap<>() ;  //= new Map<>()
+        FileInputStream f = null;
+        try {
+            f = new FileInputStream(numeFisier);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        Scanner sc = new Scanner(f);
+
+        while (sc.hasNext()) {
+            String linie = sc.nextLine();
+            String date[] = linie.split(",");
+            numarMatricol = date[0];
+            nota = date[1];
+            note.put(numarMatricol,Integer.parseInt(nota));
+
+        }
+        sc.close();
+        return note;
+
+    }
+
+    public static Integer getNota(Student student,Map<Student,Integer> note )
+    {
+        return(note.get(student.getNumarMatricol()));
+        //sau
+
+    }
+
+    private static Map<Student,Integer> mapareNote(Map<String,Integer>note,List<Student>lista)
+    {
+        Map<Student,Integer> mapare=new HashMap<>() ;
+        for(Student s:lista)
+        {
+            mapare.put(s,note.get(s.getNumarMatricol()));
+            System.out.println(s.getNumarMatricol()+" "+mapare.get(s));
+        }
+
+        return mapare;
+
+
+    }
+
     static void main() {
         List<Student> studenti = citireFisier("studenti.cvs");  //getstudents()
+
+        Map<String,Integer> note=citireNote("Note.cvs");
+
+        Map<Student,Integer> noteStudenti=mapareNote(note,studenti);
+
+        System.out.println("Nota studentului "+studenti.get(1).getNumarMatricol()+": "+noteStudenti.get(studenti.get(1)));
+        Student s=new Student(null,"Ioan","Popa","TI22/1");
+        Integer nota2=getNota(s,noteStudenti);
+        System.out.println("nota studentului :"+nota2);
 
 
         System.out.println("nr de studenti din lista este : " + studenti.size());
@@ -118,8 +191,8 @@ return true;
         System.out.println("Sortare dupa Nume ");
         System.out.println(sortareDupaNume(studenti));
         afiseaza(studenti);
-        System.out.println(sortareDupaFormatiesiPrenume(studenti));
-        afiseaza(studenti);
+        //sortareDupaFormatiesiNume(studenti);
+        //afiseaza(studenti);
 /*
         System.out.println(s1);
         System.out.println(s2);
